@@ -1,11 +1,26 @@
 ```mermaid
 erDiagram
+    COUNTRY {
+        int country_id PK
+        string country_name
+    }
+
+    BOOKING_STATUS {
+        int status_id PK
+        string status_name
+    }
+
+    CHECK_RESULT {
+        int result_id PK
+        string result_name
+    }
+
     AIRPORT {
         int airport_id PK
         string airport_name
-        string country
         string state
         string city
+        int country_id FK
         date created_at
         date updated_at
     }
@@ -14,7 +29,7 @@ erDiagram
         int airline_id PK
         string airline_code
         string airline_name
-        string airline_country
+        int country_id FK
         date created_at
         date updated_at
     }
@@ -40,8 +55,8 @@ erDiagram
         string last_name
         date date_of_birth
         string gender
-        string country_of_citizenship
-        string country_of_residence
+        int citizenship_country_id FK
+        int residence_country_id FK
         string passport_number
         date created_at
         date updated_at
@@ -52,7 +67,7 @@ erDiagram
         int flight_id FK
         int passenger_id FK
         string booking_platform
-        string status
+        int status_id FK
         float ticket_price
         date created_at
         date updated_at
@@ -85,20 +100,24 @@ erDiagram
 
     BAGGAGE_CHECK {
         int baggage_check_id PK
-        string check_result
-        int booking_id FK
-        int passenger_id FK
+        int baggage_id FK
+        int result_id FK
         date created_at
         date updated_at
     }
 
     SECURITY_CHECK {
         int security_check_id PK
-        string check_result
         int passenger_id FK
+        int result_id FK
         date created_at
         date updated_at
     }
+
+    COUNTRY ||--o{ AIRPORT : has
+    COUNTRY ||--o{ AIRLINE : has
+    COUNTRY ||--o{ PASSENGERS : citizenship
+    COUNTRY ||--o{ PASSENGERS : residence
 
     AIRPORT ||--o{ FLIGHTS : departs_from
     AIRPORT ||--o{ FLIGHTS : arrives_to
@@ -108,9 +127,12 @@ erDiagram
     BOOKING ||--o{ BOOKING_FLIGHT : includes
     BOOKING ||--o{ BOARDING_PASS : generates
     BOOKING ||--o{ BAGGAGE : contains
-    BOOKING ||--o{ BAGGAGE_CHECK : triggers
+    BAGGAGE ||--o{ BAGGAGE_CHECK : checked
 
     PASSENGERS ||--o{ BOOKING : makes
-    PASSENGERS ||--o{ BAGGAGE_CHECK : undergoes
     PASSENGERS ||--o{ SECURITY_CHECK : passes
+
+    BOOKING_STATUS ||--o{ BOOKING : status
+    CHECK_RESULT ||--o{ BAGGAGE_CHECK : result
+    CHECK_RESULT ||--o{ SECURITY_CHECK : result
 ```
