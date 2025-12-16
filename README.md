@@ -1,114 +1,116 @@
+```mermaid
 erDiagram
     AIRPORT {
-        int airportid PK
-        varchar airportname
-        varchar country
-        varchar state
-        varchar city
-        timestamp createdat
-        timestamp updatedat
+        int airport_id PK
+        string airport_name
+        string country
+        string state
+        string city
+        date created_at
+        date updated_at
     }
-    
+
     AIRLINE {
-        int airlineid PK
-        varchar airlinecode UK
-        varchar airlinename
-        varchar airlinecountry
-        timestamp createdat
-        timestamp updatedat
+        int airline_id PK
+        string airline_code
+        string airline_name
+        string airline_country
+        date created_at
+        date updated_at
     }
-    
+
     FLIGHTS {
-        int flightid PK
-        timestamp schdeparturetime
-        timestamp scharrivaltime
-        int departingairportid FK
-        int arrivingairportid FK
-        text departinggate
-        varchar arrivinggate
-        int airlineid FK
-        timestamp actdeparturetime
-        timestamp actarrivaltime
-        timestamp createdat
-        timestamp updatedat
+        int flight_id PK
+        date sch_departure_time
+        date sch_arrival_time
+        int departing_airport_id FK
+        int arriving_airport_id FK
+        int airline_id FK
+        string departing_gate
+        string arriving_gate
+        date act_departure_time
+        date act_arrival_time
+        date created_at
+        date updated_at
     }
-    
+
     PASSENGERS {
-        int passengerid PK
-        varchar firstname
-        varchar lastname
-        date dateofbirth
-        varchar gender
-        varchar countryofcitizenship
-        varchar countryofresidence
-        varchar passportnumber UK
-        timestamp createdat
-        timestamp updatedat
+        int passenger_id PK
+        string first_name
+        string last_name
+        date date_of_birth
+        string gender
+        string country_of_citizenship
+        string country_of_residence
+        string passport_number
+        date created_at
+        date updated_at
     }
-    
+
     BOOKING {
-        int bookingid PK
-        int flightid FK
-        int passengerid FK
-        varchar bookingplatform
-        timestamp createdat
-        timestamp updatedat
-        varchar status
-        decimal ticketprice
+        int booking_id PK
+        int flight_id FK
+        int passenger_id FK
+        string booking_platform
+        string status
+        float ticket_price
+        date created_at
+        date updated_at
     }
-    
-    BOOKINGFLIGHT {
-        int bookingflightid PK
-        int bookingid FK
-        int flightid FK
-        timestamp createdat
-        timestamp updatedat
+
+    BOOKING_FLIGHT {
+        int booking_flight_id PK
+        int booking_id FK
+        int flight_id FK
+        date created_at
+        date updated_at
     }
-    
-    BOARDINGPASS {
-        int boardingpassid PK
-        int bookingid FK
-        varchar seat
-        timestamp boardingtime
-        timestamp createdat
-        timestamp updatedat
+
+    BOARDING_PASS {
+        int boarding_pass_id PK
+        int booking_id FK
+        string seat
+        date boarding_time
+        date created_at
+        date updated_at
     }
-    
+
     BAGGAGE {
-        int baggageid PK
-        decimal weightinkg
-        timestamp createdat
-        timestamp updatedat
-        int bookingid FK
+        int baggage_id PK
+        float weight_in_kg
+        int booking_id FK
+        date created_at
+        date updated_at
     }
-    
-    BAGGAGECHECK {
-        int baggagecheckid PK
-        varchar checkresult
-        timestamp createdat
-        timestamp updatedat
-        int bookingid FK
-        int passengerid FK
+
+    BAGGAGE_CHECK {
+        int baggage_check_id PK
+        string check_result
+        int booking_id FK
+        int passenger_id FK
+        date created_at
+        date updated_at
     }
-    
-    SECURITYCHECK {
-        int securitycheckid PK
-        varchar checkresult
-        timestamp createdat
-        timestamp updatedat
-        int passengerid FK
+
+    SECURITY_CHECK {
+        int security_check_id PK
+        string check_result
+        int passenger_id FK
+        date created_at
+        date updated_at
     }
-    
-    %% Relationships
-    AIRPORT ||--o{ FLIGHTS : "departure"
-    AIRPORT ||--o{ FLIGHTS : "arrival"
-    AIRLINE ||--o{ FLIGHTS : "operates"
-    PASSENGERS ||--o{ BOOKING : "makes"
-    FLIGHTS ||--o{ BOOKING : "has"
-    BOOKING ||--o{ BOOKINGFLIGHT : "changes"
-    FLIGHTS ||--o{ BOOKINGFLIGHT : "involves"
-    BOOKING ||--o{ BOARDINGPASS : "issues"
-    BOOKING ||--o{ BAGGAGE : "registers"
-    BOOKING ||--o{ BAGGAGECHECK : "checked"
-    PASSENGERS ||--o{ BAGGAGECHECK : "owns"
-    PASSENGERS ||--o{ SECURITYCHECK : "passes"
+
+    AIRPORT ||--o{ FLIGHTS : departs_from
+    AIRPORT ||--o{ FLIGHTS : arrives_to
+    AIRLINE ||--o{ FLIGHTS : operates
+
+    FLIGHTS ||--o{ BOOKING_FLIGHT : has
+    BOOKING ||--o{ BOOKING_FLIGHT : includes
+    BOOKING ||--o{ BOARDING_PASS : generates
+    BOOKING ||--o{ BAGGAGE : contains
+    BOOKING ||--o{ BAGGAGE_CHECK : triggers
+
+    PASSENGERS ||--o{ BOOKING : makes
+    PASSENGERS ||--o{ BAGGAGE_CHECK : undergoes
+    PASSENGERS ||--o{ SECURITY_CHECK : passes
+```
