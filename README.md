@@ -1,138 +1,117 @@
 ```mermaid
 erDiagram
-    COUNTRY {
-        int country_id PK
-        string country_name
-    }
-
-    BOOKING_STATUS {
-        int status_id PK
-        string status_name
-    }
-
-    CHECK_RESULT {
-        int result_id PK
-        string result_name
-    }
-
     AIRPORT {
-        int airport_id PK
-        string airport_name
+        int airportid PK
+        string airportname
+        string country
         string state
         string city
-        int country_id FK
-        date created_at
-        date updated_at
+        timestamp createdat
+        timestamp updatedat
     }
 
-    AIRLINE {
-        int airline_id PK
-        string airline_code
-        string airline_name
-        int country_id FK
-        date created_at
-        date updated_at
+    AIRLINEINFO {
+        int airlineid PK
+        string airlinecode
+        string airlinename
+        string airlinecountry
+        timestamp createdat
+        timestamp updatedat
+        string info
     }
 
     FLIGHTS {
-        int flight_id PK
-        date sch_departure_time
-        date sch_arrival_time
-        int departing_airport_id FK
-        int arriving_airport_id FK
-        int airline_id FK
-        string departing_gate
-        string arriving_gate
-        date act_departure_time
-        date act_arrival_time
-        date created_at
-        date updated_at
+        int flightid PK
+        timestamp schdeparturetimetimestamp
+        timestamp scharrivaltimetimestamp
+        int departingairportid FK
+        int arrivingairportid FK
+        string departinggate
+        string arrivinggate
+        int airlineid FK
+        timestamp actdeparturetimetimestamp
+        timestamp actarrivaltimetimestamp
+        timestamp createdat
+        timestamp updatedat
     }
 
     PASSENGERS {
-        int passenger_id PK
-        string first_name
-        string last_name
-        date date_of_birth
+        int passengerid PK
+        string firstname
+        string lastname
+        date dateofbirth
         string gender
-        int citizenship_country_id FK
-        int residence_country_id FK
-        string passport_number
-        date created_at
-        date updated_at
+        string countryofcitizenship
+        string countryofresidence
+        string passportnumber
+        timestamp createdat
+        timestamp updatedat
     }
 
     BOOKING {
-        int booking_id PK
-        int flight_id FK
-        int passenger_id FK
-        string booking_platform
-        int status_id FK
-        float ticket_price
-        date created_at
-        date updated_at
+        int bookingid PK
+        int flightid FK
+        int passengerid FK
+        string bookingplatform
+        string status
+        float price
+        timestamp createdat
+        timestamp updatedat
     }
 
-    BOOKING_FLIGHT {
-        int booking_flight_id PK
-        int booking_id FK
-        int flight_id FK
-        date created_at
-        date updated_at
-    }
-
-    BOARDING_PASS {
-        int boarding_pass_id PK
-        int booking_id FK
+    BOARDINGPASS {
+        int boardingpassid PK
+        int bookingid FK
         string seat
-        date boarding_time
-        date created_at
-        date updated_at
+        timestamp boardingtime
+        timestamp createdat
+        timestamp updatedat
     }
 
     BAGGAGE {
-        int baggage_id PK
-        float weight_in_kg
-        int booking_id FK
-        date created_at
-        date updated_at
+        int baggageid PK
+        float weightinkg
+        int bookingid FK
+        timestamp createdat
+        timestamp updatedat
     }
 
-    BAGGAGE_CHECK {
-        int baggage_check_id PK
-        int baggage_id FK
-        int result_id FK
-        date created_at
-        date updated_at
+    BAGGAGECHECK {
+        int baggagecheckid PK
+        string checkresult
+        int bookingid FK
+        int passengerid FK
+        timestamp createdat
+        timestamp updatedat
     }
 
-    SECURITY_CHECK {
-        int security_check_id PK
-        int passenger_id FK
-        int result_id FK
-        date created_at
-        date updated_at
+    SECURITYCHECK {
+        int securitycheckid PK
+        string checkresult
+        int passengerid FK
+        timestamp createdat
+        timestamp updatedat
     }
 
-    COUNTRY ||--o{ AIRPORT : has
-    COUNTRY ||--o{ AIRLINE : has
-    COUNTRY ||--o{ PASSENGERS : citizenship
-    COUNTRY ||--o{ PASSENGERS : residence
+    BOOKINGFLIGHT {
+        int bookingflightid PK
+        int bookingid FK
+        int flightid FK
+        timestamp createdat
+        timestamp updatedat
+    }
 
-    AIRPORT ||--o{ FLIGHTS : departs_from
-    AIRPORT ||--o{ FLIGHTS : arrives_to
-    AIRLINE ||--o{ FLIGHTS : operates
-
-    FLIGHTS ||--o{ BOOKING_FLIGHT : has
-    BOOKING ||--o{ BOOKING_FLIGHT : includes
-    BOOKING ||--o{ BOARDING_PASS : generates
-    BOOKING ||--o{ BAGGAGE : contains
-    BAGGAGE ||--o{ BAGGAGE_CHECK : checked
-
-    PASSENGERS ||--o{ BOOKING : makes
-    PASSENGERS ||--o{ SECURITY_CHECK : passes
-
-    BOOKING_STATUS ||--o{ BOOKING : status
-    CHECK_RESULT ||--o{ BAGGAGE_CHECK : result
-    CHECK_RESULT ||--o{ SECURITY_CHECK : result
+    %% Relationships (One-to-Many)
+    AIRPORT ||--o{ FLIGHTS : departingairportid
+    AIRPORT ||--o{ FLIGHTS : arrivingairportid
+    AIRLINEINFO ||--o{ FLIGHTS : airlineid
+    PASSENGERS ||--o{ BOOKING : passengerid
+    PASSENGERS ||--o{ SECURITYCHECK : passengerid
+    PASSENGERS ||--o{ BAGGAGECHECK : passengerid
+    BOOKING ||--o{ BOARDINGPASS : bookingid
+    BOOKING ||--o{ BAGGAGE : bookingid
+    BOOKING ||--o{ BAGGAGECHECK : bookingid
+    BOOKING ||--o{ BOOKINGFLIGHT : bookingid
+    FLIGHTS ||--o{ BOOKING : flightid
+    FLIGHTS ||--o{ BOOKINGFLIGHT : flightid
 ```
